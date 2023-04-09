@@ -103,7 +103,7 @@ async def on_message(message):
             expected_time_str = boss_timers[boss_name]['time'].strftime('%H:%M:%S')
             # 작성자 아이디를 가져와 메시지를 전송합니다.
             author_name = message.author.name
-            await message.channel.send(f"{boss_name} 보스 타이머가 초기화되었고, {expected_time_str} 에 다시 출현합니다. / {author_name}")
+            await message.channel.send(f"{boss_name} 보스 타이머가 초기화되었고, {expected_time_str} 에 다시 출현합니다. / {author.display_name}")
 
     # "보스이름 시간" 형태의 메시지에 대한 처리입니다.
     elif len(message.content.split()) == 2:
