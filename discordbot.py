@@ -62,33 +62,7 @@ async def on_message(message):
         boss_str = '\n'.join([f"[{boss}] 출현 예상 : {boss_timers[boss]['time'].strftime('%H:%M:%S')}" if boss in boss_timers else f"[{boss}] 출현 예상 : " for boss in boss_list_sorted])
         await message.channel.send(f"```{boss_str}```")
 
-    # "보스이름 시간" 형태의 메시지에 대한 처리입니다.
-        args = message.content.split()
-        if len(args) == 2 and args[0] in boss_list:
-            # 입력된 시간을 파싱합니다.
-            try:
-                expected_time_kst = datetime.datetime.strptime(args[1], '%H%M')
-            except ValueError:
-                await message.channel.send('잘못된 시간 형식입니다. (HHMM)')
-                return
 
-            # 보스 타이머를 초기화하고 예상 출현 시간을 계산합니다.
-            # 보스 타이머를 UTC 기준으로 계산합니다.
-            now = datetime.datetime.utcnow()
-            expected_time_utc = datetime.datetime(now.year, now.month, now.day, expected_time_kst.hour, expected_time_kst.minute, 0) + datetime.timedelta(hours=3)
-            # 입력된 시간이 현재 시간보다 이전인 경우, 날짜를 하루 추가합니다.
-            if expected_time_utc < now:
-                expected_time_utc += datetime.timedelta(days=1)
-            boss_timers[args[0]] = {
-                'time': expected_time_utc,
-                'author': message.author.id
-            }
-            # 예상 시간을 한국 시간으로 표기합니다.
-            expected_time_str = expected_time_utc.strftime('%H:%M:%S')
-
-            # 작성자 아이디를 가져와 메시지를 전송합니다.
-            author_name = message.author.name
-            await message.channel.send(f"{args[0]} 보스 출현 시간이 변경되었습니다. / {author_name}")
 
 
 
@@ -116,6 +90,36 @@ async def on_message(message):
             # 작성자 아이디를 가져와 메시지를 전송합니다.
             author_name = message.author.name
             await message.channel.send(f"{boss_name} 보스 타이머가 초기화되었고, {expected_time_str} 에 다시 출현합니다. / {author_name}")
+
+
+    # "보스이름 시간" 형태의 메시지에 대한 처리입니다.
+        if len(args) == 2 and args[0] in boss_list:
+            # 입력된 시간을 파싱합니다.
+            try:
+                expected_time_kst = datetime.datetime.strptime(args[1], '%H%M')
+            except ValueError:
+                await message.channel.send('잘못된 시간 형식입니다. (HHMM)')
+                return
+
+            # 보스 타이머를 초기화하고 예상 출현 시간을 계산합니다.
+            # 보스 타이머를 UTC 기준으로 계산합니다.
+            now = datetime.datetime.utcnow()
+            expected_time_utc = datetime.datetime(now.year, now.month, now.day, expected_time_kst.hour, expected_time_kst.minute, 0) + datetime.timedelta(hours=3)
+            # 입력된 시간이 현재 시간보다 이전인 경우, 날짜를 하루 추가합니다.
+            if expected_time_utc < now:
+                expected_time_utc += datetime.timedelta(days=1)
+            boss_timers[args[0]] = {
+                'time': expected_time_utc,
+                'author': message.author.id
+            }
+            # 예상 시간을 한국 시간으로 표기합니다.
+            expected_time_str = expected_time_utc.strftime('%H:%M:%S')
+
+            # 작성자 아이디를 가져와 메시지를 전송합니다.
+            author_name = message.author.name
+            await message.channel.send(f"{args[0]} 보스 출현 시간이 변경되었습니다. / {author_name}")
+
+
 
 
 try:
