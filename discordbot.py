@@ -132,7 +132,7 @@ async def on_message(message):
             # 예상 시간을 한국 시간으로 표기합니다.
             expected_time_str = expected_time_utc.strftime('%H:%M:%S')
             # 작성자 아이디를 가져와 메시지를 전송합니다.
-            author_name = message.author.name
+            author_name = message.author.display_name
             await message.channel.send(f"{args[0]} 보스 출현 시간이 변경되었습니다. / {author_name}")
 
 try:
