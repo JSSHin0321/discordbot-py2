@@ -62,6 +62,47 @@ async def on_message(message):
     if message.content == '보스맵 3':
         await message.channel.send('https://dszw1qtcnsa5e.cloudfront.net/community/20230404/29c555d6-eb4b-4674-8955-eae7d94b48d1/50%EB%B3%B4%EC%8A%A4.png?data-size=5311083')
 
+    # 파티 모집
+    elif message.content == '파티 모집':
+        if party:
+            await message.channel.send('이미 진행 중인 파티 모집이 있습니다.')
+            return
+
+        party = {'leader': message.author, 'members': []}
+        await message.channel.send(f'{message.author.mention}님이 파티 모집을 시작했습니다. 참가하시려면 !참가 를 입력해주세요.')
+
+    # 참가 신청
+    elif message.content == '참가':
+        if not party:
+            await message.channel.send('진행 중인 파티 모집이 없습니다.')
+            return
+
+        if len(party['members']) >= 5:
+            await message.channel.send('파티 인원이 꽉 찼습니다.')
+            return
+
+        if message.author in party['members']:
+            await message.channel.send('이미 참가한 상태입니다.')
+            return
+
+        party['members'].append(message.author)
+        await message.channel.send(f'{message.author.mention}님이 파티에 참가했습니다. ({len(party["members"])} / 5)')
+
+    # 파티 해산
+    elif message.content == f'{PREFIX}파티 해산':
+        if not party:
+            await message.channel.send('진행 중인 파티 모집이 없습니다.')
+            return
+
+        if message.author != party['leader']:
+            await message.channel.send('파티 리더만 파티를 해산할 수 있습니다.')
+            return
+
+        members_str = ', '.join([member.mention for member in party['members']])
+        await message.channel.send(f'파티가 해산되었습니다. {members_str}')
+        party = None
+    
+
 
     # "보스" 형태의 메시지에 대한 처리입니다.
     elif message.content == '보스':
