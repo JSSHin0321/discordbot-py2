@@ -62,6 +62,20 @@ async def on_message(message):
     if message.content == '보스맵 3':
         await message.channel.send('https://dszw1qtcnsa5e.cloudfront.net/community/20230404/29c555d6-eb4b-4674-8955-eae7d94b48d1/50%EB%B3%B4%EC%8A%A4.png?data-size=5311083')
 
+    # "명령어" 
+    if message.content == '명령어':
+        command_dict = {
+            "보스맵 1": "40보스맵을 출력합니다.",
+            "보스맵 2": "45보스맵을 출력합니다.",
+            "보스맵 3": "50보스맵을 출력합니다.",
+            "보스": "보스 목록과 예상 출현 시간을 출력합니다.",
+            "보스이름 초기화": "해당 보스의 예상 출현 시간을 초기화합니다.",
+            "보스이름 시간": "해당 보스의 예상 출현 시간을 변경합니다."
+        }
+        command_str = "\n".join([f"{k}: {v}" for k, v in command_dict.items()])
+        await message.channel.send(f"```{command_str}```")
+
+
 
     # "보스" 라는 명령어가 입력되면 보스 리스트와 해당 보스의 예상 출현 시간을 출력합니다.
     elif message.content == '보스':
