@@ -63,8 +63,7 @@ async def on_message(message):
         await message.channel.send(f"```{boss_str}```")
 
     # "보스이름 시간" 형태의 메시지에 대한 처리입니다.
-    elif message.content.startswith(f'{PREFIX}set'):
-        args = message.content.split()[1:]
+        args = message.content.split()
         if len(args) == 2 and args[0] in boss_list:
             # 입력된 시간을 파싱합니다.
             try:
@@ -90,6 +89,7 @@ async def on_message(message):
             # 작성자 아이디를 가져와 메시지를 전송합니다.
             author_name = message.author.name
             await message.channel.send(f"{args[0]} 보스 출현 시간이 변경되었습니다. / {author_name}")
+
 
 
 
