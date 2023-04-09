@@ -63,11 +63,6 @@ async def on_message(message):
         await message.channel.send(f"```{boss_str}```")
 
 
-
-
-
-
-
     # '컷'이 들어간 메시지에 대한 처리입니다.
     elif message.content.endswith('컷'):
         # 보스 이름을 추출합니다.
@@ -91,9 +86,10 @@ async def on_message(message):
             author_name = message.author.name
             await message.channel.send(f"{boss_name} 보스 타이머가 초기화되었고, {expected_time_str} 에 다시 출현합니다. / {author_name}")
 
-
     # "보스이름 시간" 형태의 메시지에 대한 처리입니다.
-        elif len(args) == 2 and args[0] in boss_list:
+    elif len(message.content.split()) == 2:
+        args = message.content.split()
+        if args[0] in boss_list:
             # 입력된 시간을 파싱합니다.
             try:
                 expected_time_kst = datetime.datetime.strptime(args[1], '%H%M')
@@ -114,11 +110,9 @@ async def on_message(message):
             }
             # 예상 시간을 한국 시간으로 표기합니다.
             expected_time_str = expected_time_utc.strftime('%H:%M:%S')
-
             # 작성자 아이디를 가져와 메시지를 전송합니다.
             author_name = message.author.name
             await message.channel.send(f"{args[0]} 보스 출현 시간이 변경되었습니다. / {author_name}")
-
 
 
 
