@@ -67,6 +67,7 @@ async def on_message(message):
 
     # 파티 모집
     elif message.content == '파티 모집':
+        global party
         if party:
             await message.channel.send('이미 진행 중인 파티 모집이 있습니다.')
             return
@@ -76,6 +77,7 @@ async def on_message(message):
 
     # 참가 신청
     elif message.content == '참가':
+        global party
         if not party:
             await message.channel.send('진행 중인 파티 모집이 없습니다.')
             return
@@ -93,6 +95,7 @@ async def on_message(message):
 
     # 파티 해산
     elif message.content == f'{PREFIX}파티 해산':
+        global party
         if not party:
             await message.channel.send('진행 중인 파티 모집이 없습니다.')
             return
@@ -105,8 +108,6 @@ async def on_message(message):
         await message.channel.send(f'파티가 해산되었습니다. {members_str}')
         party = None
     
-
-
     # "보스" 형태의 메시지에 대한 처리입니다.
     elif message.content == '보스':
         # 예상 출현 시간이 빠른 순서대로 보스 목록을 정렬합니다.
