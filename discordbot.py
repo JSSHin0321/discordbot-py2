@@ -83,7 +83,8 @@ async def on_message(message):
         boss_timers_sorted = sorted(boss_timers.items(), key=lambda x: x[1]['time'] if x[1] else datetime.datetime.max)
         boss_list_sorted = [x[0] for x in boss_timers_sorted] + [x for x in boss_list if x not in boss_timers]
         # 보스 리스트와 예상 출현 시간을 문자열로 변환합니다.
-        boss_str = '\n'.join([f"[{boss}] 출현 예상 : {boss_timers[boss]['time'].strftime('%H:%M:%S')}" if boss in boss_timers else f"[{boss}] 출현 예상 : " for boss in boss_list_sorted])
+        author_name = message.author.display_name
+        boss_str = '\n'.join([f"[{boss}] 출현 예상 : {boss_timers[boss]['time'].strftime('%H:%M:%S')} ({author_name})" if boss in boss_timers else f"[{boss}] 출현 예상 : " for boss in boss_list_sorted])
         await message.channel.send(f"```{boss_str}```")
 
     # "보스 초기화" 형태의 메시지에 대한 처리입니다.
@@ -144,7 +145,7 @@ async def on_message(message):
             # 예상 시간을 한국 시간으로 표기합니다.
             expected_time_str = expected_time_utc.strftime('%H:%M:%S')
             # 작성자 아이디를 가져와 메시지를 전송합니다.
-            author_name = message.author.name
+            author_name = message.author.display_name
             await message.channel.send(f"{args[0]} 보스 출현 시간이 변경되었습니다. / {author_name}")
 
 try:
