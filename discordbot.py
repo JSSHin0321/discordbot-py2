@@ -93,7 +93,7 @@ async def on_message(message):
 
 
     # "보스이름 시간" 형태의 메시지에 대한 처리입니다.
-        if len(args) == 2 and args[0] in boss_list:
+        elif len(args) == 2 and args[0] in boss_list:
             # 입력된 시간을 파싱합니다.
             try:
                 expected_time_kst = datetime.datetime.strptime(args[1], '%H%M')
@@ -122,7 +122,9 @@ async def on_message(message):
 
 
 
+
 try:
     client.run(TOKEN)
 except discord.errors.LoginFailure as e:
     print("Improper token has been passed.")
+
