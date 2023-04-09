@@ -55,9 +55,8 @@ async def on_message(message):
 
     if message.content == '보스맵':
         image_url = 'https://dszw1qtcnsa5e.cloudfront.net/community/20230404/274c4eee-66f5-4a35-81d4-4b187667f333/40%EB%B3%B4%EC%8A%A4.png?data-size=5309107'
-        with urllib.request.urlopen(image_url) as url:
-            image_bytes = BytesIO(url.read())
-        await message.channel.send(file=discord.File(fp=image_bytes, filename='bossmap.png'))
+        response = requests.get(image_url)
+        await message.channel.send(file=discord.File(BytesIO(response.content), 'bossmap.png'))
 
     # "보스" 라는 명령어가 입력되면 보스 리스트와 해당 보스의 예상 출현 시간을 출력합니다.
     elif message.content == '보스':
