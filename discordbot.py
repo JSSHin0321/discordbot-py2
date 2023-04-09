@@ -63,14 +63,16 @@ async def on_message(message):
         await message.channel.send('https://dszw1qtcnsa5e.cloudfront.net/community/20230404/29c555d6-eb4b-4674-8955-eae7d94b48d1/50%EB%B3%B4%EC%8A%A4.png?data-size=5311083')
 
 
-    # "보스" 라는 명령어가 입력되면 보스 리스트와 해당 보스의 예상 출현 시간을 출력합니다.
+    # "보스" 형태의 메시지에 대한 처리입니다.
     elif message.content == '보스':
         # 예상 출현 시간이 빠른 순서대로 보스 목록을 정렬합니다.
         boss_timers_sorted = sorted(boss_timers.items(), key=lambda x: x[1]['time'] if x[1] else datetime.datetime.max)
         boss_list_sorted = [x[0] for x in boss_timers_sorted] + [x for x in boss_list if x not in boss_timers]
         # 보스 리스트와 예상 출현 시간을 문자열로 변환합니다.
-        boss_str = '\n'.join([f"[{boss}] 출현 예상 : {boss_timers[boss]['time'].strftime('%H:%M:%S')}" if boss in boss_timers else f"[{boss}] 출현 예상 : " for boss in boss_list_sorted])
+        author_name = message.author.display_name
+        boss_str = '\n'.join([f"[{boss}] 출현 예상 : {boss_timers[boss]['time'].strftime('%H:%M:%S')} ({author_name})" if boss in boss_timers else f"[{boss}] 출현 예상 : " for boss in boss_list_sorted])
         await message.channel.send(f"```{boss_str}```")
+
 
     # "보스 초기화" 형태의 메시지에 대한 처리입니다.
     elif len(message.content.split()) == 2 and message.content.split()[1] == '초기화':
