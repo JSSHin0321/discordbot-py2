@@ -62,29 +62,6 @@ async def on_message(message):
         boss_str = '\n'.join([f"[{boss}] 출현 예상 : {boss_timers[boss]['time'].strftime('%H:%M:%S')}" if boss in boss_timers else f"[{boss}] 출현 예상 : " for boss in boss_list_sorted])
         await message.channel.send(f"```{boss_str}```")
 
-    # '컷'이 들어간 메시지에 대한 처리입니다.
-    elif message.content.endswith('컷'):
-        # 보스 이름을 추출합니다.
-        boss_name = message.content[:-1].strip()
-
-        # 보스 이름이 존재하지 않는 경우, 에러 메시지를 전송합니다.
-        if boss_name not in boss_list:
-            await message.channel.send(f"{boss_name} 보스는 존재하지 않는 보스입니다.")
-        else:
-            # 보스 이름이 존재하는 경우, 보스 타이머를 초기화하고 3시간 후에 다시 출현한다는 메시지를 전송합니다.
-            # 보스 타이머를 UTC 기준으로 계산합니다.
-            boss_timers[boss_name] = {
-                'time': datetime.datetime.utcnow() + datetime.timedelta(hours=3),
-                'author': message.author.id
-            }
-            # 한국 시간으로 변환합니다.
-            boss_timers[boss_name]['time'] += datetime.timedelta(hours=9)
-            # 예상 시간을 한국 시간으로 표기합니다.
-            expected_time_str = boss_timers[boss_name]['time'].strftime('%H:%M:%S')
-            # 작성자 아이디를 가져와 메시지를 전송합니다.
-            author_name = message.author.name
-            await message.channel.send(f"{boss_name} 보스 타이머가 초기화되었고, {expected_time_str} 에 다시 출현합니다. / {author_name}")
-
     # "보스이름 시간" 형태의 메시지에 대한 처리입니다.
     elif message.content.startswith(f'{PREFIX}set'):
         args = message.content.split()[1:]
@@ -114,6 +91,31 @@ async def on_message(message):
             author_name = message.author.name
             await message.channel.send(f"{args[0]} 보스 출현 시간이 변경되었습니다. / {author_name}")
 
+
+
+
+    # '컷'이 들어간 메시지에 대한 처리입니다.
+    elif message.content.endswith('컷'):
+        # 보스 이름을 추출합니다.
+        boss_name = message.content[:-1].strip()
+
+        # 보스 이름이 존재하지 않는 경우, 에러 메시지를 전송합니다.
+        if boss_name not in boss_list:
+            await message.channel.send(f"{boss_name} 보스는 존재하지 않는 보스입니다.")
+        else:
+            # 보스 이름이 존재하는 경우, 보스 타이머를 초기화하고 3시간 후에 다시 출현한다는 메시지를 전송합니다.
+            # 보스 타이머를 UTC 기준으로 계산합니다.
+            boss_timers[boss_name] = {
+                'time': datetime.datetime.utcnow() + datetime.timedelta(hours=3),
+                'author': message.author.id
+            }
+            # 한국 시간으로 변환합니다.
+            boss_timers[boss_name]['time'] += datetime.timedelta(hours=9)
+            # 예상 시간을 한국 시간으로 표기합니다.
+            expected_time_str = boss_timers[boss_name]['time'].strftime('%H:%M:%S')
+            # 작성자 아이디를 가져와 메시지를 전송합니다.
+            author_name = message.author.name
+            await message.channel.send(f"{boss_name} 보스 타이머가 초기화되었고, {expected_time_str} 에 다시 출현합니다. / {author_name}")
 
 
 try:
