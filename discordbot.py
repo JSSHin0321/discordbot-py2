@@ -38,6 +38,9 @@ boss_list = [
 # 보스 목록과 예상 출현 시간을 저장하는 딕셔너리입니다.
 boss_timers = {}
 
+# 파티 정보를 저장하는 변수입니다.
+party = None
+
 @client.event
 async def on_ready():
     print(f'Logged in as {client.user}.')
