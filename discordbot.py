@@ -115,10 +115,18 @@ async def on_message(message):
             await message.channel.send(f"{args[0]} 보스 출현 시간이 변경되었습니다. / {author_name}")
 
 
+    # "보스 초기화" 형태의 메시지에 대한 처리입니다.
+    elif len(message.content.split()) == 2 and message.content.split()[1] == '초기화':
+        boss_name = message.content.split()[0]
+        if boss_name in boss_timers:
+            del boss_timers[boss_name]
+            await message.channel.send(f"{boss_name} 보스 타이머가 초기화되었습니다.")
+        else:
+            await message.channel.send(f"{boss_name} 보스 타이머가 존재하지 않습니다.")
+
 
 
 try:
     client.run(TOKEN)
 except discord.errors.LoginFailure as e:
     print("Improper token has been passed.")
-
