@@ -53,6 +53,10 @@ async def on_message(message):
     if message.content.startswith(f'{PREFIX}hello'):
         await message.channel.send('Hello!')
 
+    if message.content == '보스맵':
+    image_url = 'https://dszw1qtcnsa5e.cloudfront.net/community/20230404/29c555d6-eb4b-4674-8955-eae7d94b48d1/50%EB%B3%B4%EC%8A%A4.png?data-size=5311083'
+    await message.channel.send(file=discord.File(fp=image_url, filename='bossmap.png'))
+
     # "보스" 라는 명령어가 입력되면 보스 리스트와 해당 보스의 예상 출현 시간을 출력합니다.
     elif message.content == '보스':
         # 예상 출현 시간이 빠른 순서대로 보스 목록을 정렬합니다.
