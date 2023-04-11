@@ -93,16 +93,10 @@ async def play_tts_alert():
 
             # TTS 알림 메시지를 생성하고 재생합니다.
             message = f"{boss_name} 보스가 곧 출현합니다. {boss_data['time'].strftime('%H시 %M분')}입니다."
-            vc = await voice_channel.connect()
-            vc.play(discord.FFmpegPCMAudio(f"tts.mp3 \"{message}\""))
-            while vc.is_playing():
-                await asyncio.sleep(1)
-            await vc.disconnect()
-            await boss_channel.send(f"**{message}**")
+            await boss_channel.send(f"**{message}**", tts=True)
+            await voice_channel.connect()
+
     
-
-
-
 
 @client.event
 async def on_ready():
