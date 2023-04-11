@@ -4,6 +4,8 @@ import discord
 from dotenv import load_dotenv
 import os
 import datetime
+import discord
+import asyncio
 load_dotenv()
 
 PREFIX = os.environ['PREFIX']
@@ -37,6 +39,70 @@ boss_list = [
 
 # 보스 목록과 예상 출현 시간을 저장하는 딕셔너리입니다.
 boss_timers = {}
+
+# TTS 기능으로 음성 메시지를 생성합니다.
+async def play_tts_message(voice_client, text):
+    if not voice_client:
+        return
+    # 음성 메시지 생성을 위한 TTS 기능 호출
+    message = await client.ws.send(discord.opus.encoder.OpusEncoder.create_select_payload("korean"))
+    speaking_payload = {
+        'op': discord.gateway.DiscordWebSocket.OP_CODES['SPEAKING'],
+        'd': {
+            'speaking': True,
+            'delay': 0
+        },
+        's': message['s'],
+        't': 'VOICE_STATE_UPDATE'
+    }
+    await client.ws.send_json(speaking_payload)
+    # TTS 기능으로 텍스트를 음성으로 변환하여 전송
+    encoded_voice = await client.ws.send(discord.opus.encoder.OpusEncoder.encode(text))
+    audio_payload = {
+        'op': discord.gateway.DiscordWebSocket.OP_CODES['FRAME'],
+        'd': {
+            'nonce': encoded_voice['nonce'],
+            'timestamp': encoded_voice['timestamp'],
+            'data': encoded_voice['data']
+        },
+        's': message['s'],
+        't': 'VOICE_STATE_UPDATE'
+    }
+    await client.ws.send_json(audio_payload)
+    await asyncio.sleep(5)
+    # TTS 기능 종료
+    stop_speaking_payload = {
+        'op': discord.gateway.DiscordWebSocket.OP_CODES['SPEAKING'],
+        'd': {
+            'speaking': False,
+            'delay': 0
+        },
+        's': message['s'],
+        't': 'VOICE_STATE_UPDATE'
+    }
+    await client.ws.send_json(stop_speaking_payload)
+    
+    
+async def play_tts_alert():
+    now = datetime.datetime.now()
+
+    for boss_name, boss_data in boss_timers.items():
+        if boss_data and (boss_data['time'] - now) < datetime.timedelta(minutes=10):
+            boss_channel = client.get_channel(boss_data['channel_id'])
+            voice_channel = client.get_channel(boss_data['voice_channel_id'])
+
+            # TTS 알림 메시지를 생성하고 재생합니다.
+            message = f"{boss_name} 보스가 곧 출현합니다. {boss_data['time'].strftime('%H시 %M분')}입니다."
+            vc = await voice_channel.connect()
+            vc.play(discord.FFmpegPCMAudio(f"tts.mp3 \"{message}\""))
+            while vc.is_playing():
+                await asyncio.sleep(1)
+            await vc.disconnect()
+            await boss_channel.send(f"**{message}**")
+    
+
+
+
 
 @client.event
 async def on_ready():
